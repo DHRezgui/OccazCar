@@ -1,7 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'core/di/injection.dart';
+import 'data/datasources/local/hive_service.dart';
+import 'data/datasources/remote/firebase_service.dart';
+import 'features/vendeur/publication/presentation/pages/create_annonce_page.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize local storage (Hive) and Firebase early. If you use FlutterFire CLI,
+  // generate `firebase_options.dart` and ensure it's available in lib/ so
+  // Firebase.initializeApp() succeeds. These initializers are best-effort and
+  // will not block the UI on failure — errors should be addressed during setup.
+  try {
+    await HiveService().init();
+  } catch (e) {
+    if (kDebugMode) print('Hive init failed: $e');
+  }
+
+  try {
+    await FirebaseService().init();
+  } catch (e) {
+    if (kDebugMode) print('Firebase init failed: $e');
+  }
+
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -84,6 +110,17 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add_box_outlined),
+            tooltip: 'Créer annonce (test)',
+            onPressed:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CreateAnnoncePage()),
+                ),
+          ),
+        ],
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
