@@ -4,6 +4,8 @@ class VehicleModel {
   final String model;
   final int year;
   final int mileage;
+  /// Liste des URLs des photos du véhicule
+  final List<String> photos;
 
   VehicleModel({
     required this.id,
@@ -11,7 +13,11 @@ class VehicleModel {
     required this.model,
     required this.year,
     required this.mileage,
+    this.photos = const [],
   });
+
+  /// Retourne la première photo ou null
+  String? get mainPhoto => photos.isNotEmpty ? photos.first : null;
 
   factory VehicleModel.fromJson(Map<String, dynamic> json) => VehicleModel(
     id: json['id'] as String,
@@ -19,6 +25,7 @@ class VehicleModel {
     model: json['model'] as String,
     year: json['year'] as int,
     mileage: json['mileage'] as int,
+    photos: (json['photos'] as List<dynamic>?)?.cast<String>() ?? [],
   );
 
   Map<String, dynamic> toJson() => {
@@ -27,5 +34,6 @@ class VehicleModel {
     'model': model,
     'year': year,
     'mileage': mileage,
+    'photos': photos,
   };
 }
