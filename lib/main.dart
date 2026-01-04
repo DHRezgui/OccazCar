@@ -7,6 +7,8 @@ import 'firebase_options.dart';
 // Import du thème
 import 'core/theme/app_theme.dart';
 import 'core/theme/app_colors.dart';
+import 'core/routes/app_router.dart' as app_router;
+import 'features/auth/presentation/pages/startup_page.dart';
 
 // Import des pages de l'Interface Acheteur (Personne 3)
 import 'features/acheteur/recherche/presentation/pages/recherche_page.dart';
@@ -47,11 +49,14 @@ class OccazCarApp extends StatelessWidget {
       title: 'OccazCar',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
-      home: const MainNavigationPage(),
+      home: const StartupPage(),
       routes: {
+        '/home': (context) => const MainNavigationPage(),
         '/search': (context) => const RecherchePage(),
         '/favorites': (context) => const FavorisPage(),
         '/messages': (context) => const ConversationsPage(),
+        // Auth routes
+        ...app_router.appRoutes(),
       },
       onGenerateRoute: (settings) {
         // Route pour les détails de véhicule
